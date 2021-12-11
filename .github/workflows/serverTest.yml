@@ -10,9 +10,9 @@ jobs:
       matrix:
         node-version: [14.x]
     steps:  #PASOS A SEGUIR
-      - uses: actions/checkout@v2 
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-      - run: |
+      - uses: actions/checkout@v2 #CLONAR EL PROYECTO EN LA MAQUINA VIRTUAL
+      - name: Use Node.js ${{ matrix.node-version }} # NOMBRE DE LA PRUEBA
+        uses: actions/setup-node@v1 
+      - run: | #COMANDOS
           npm install 
           npm test

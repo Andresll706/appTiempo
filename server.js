@@ -31,7 +31,7 @@ var key = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmRyZXNsbDcwNkBnbWFpbC5jb20iLCJqdGki
 // Init the server
 var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;
-    console.log("App now running on port", port);
+    //console.log("App now running on port", port);
 });
 
 
@@ -69,7 +69,6 @@ function GetMunicipios(){
         datosJSON.forEach(function (entry) {
             entry.nombre
             datosfiltrados[j] = {"codigo":entry.id.substring(2, entry.id.length) ,"nombre": entry.nombre};
-            process.stdout.write(JSON.stringify(utf8Encode(entry.nombre).replace("\uFFFD", "\"")));
             j++;
         }); 
     });
@@ -147,7 +146,7 @@ function GetTiempoMunicipio( codigo , unidad ) {
                             "periodo": "18-24"
                         }]
                     }];
-                    process.stdout.write(JSON.stringify(tiempo) + '\n');
+                    //process.stdout.write(JSON.stringify(tiempo) + '\n');
                 });
             });
           
