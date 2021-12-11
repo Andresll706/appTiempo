@@ -1,0 +1,26 @@
+<form class="form">
+    <mat-form-field class="full-width">
+      <mat-label>Municipio</mat-label>
+      <input matInput
+             aria-label="Municipio"
+             [matAutocomplete]="auto"
+             [formControl]="MunicipioCtrl"
+             (ngModelChange)="getTemperature()">
+      <mat-autocomplete #auto="matAutocomplete">
+        <mat-option *ngFor="let Municipio of filteredMunicipios | async" [value]="Municipio.nombre">
+          <span>{{Municipio.nombre}}</span>
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-select [(ngModel)]="selectedTemperature"  (ngModelChange)="onChangeTemperature($event)" [ngModelOptions]="{standalone: true}">
+          <mat-option *ngFor="let temperature of temperatures" [value]="temperature">
+            {{temperature.viewValue}}
+          </mat-option>
+        </mat-select>
+    </mat-form-field>
+</form>
+
+<card *ngIf="showTemp" [municipio]="municipioSelect?.nombre" [tiempo]="tiempo"></card>
+

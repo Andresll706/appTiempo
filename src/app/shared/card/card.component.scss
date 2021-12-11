@@ -1,0 +1,54 @@
+.card{
+    margin-top: 1em;
+    margin-left: auto;
+    margin-right: auto;
+    min-width: 150px;
+    max-width: 500px;
+  }
+    .card-title{
+      font-weight: bold; 
+    }
+  
+    .card-subtitle{
+      color: gray;
+    }
+  
+    .card-content{
+      display: flex;
+    }
+      .card-temp{
+        font-size: 150px;
+        color: grey;
+        margin-bottom: 10px;
+      }
+  
+      .card-uTemp{
+        font-size: 70px;
+        color: grey;
+      }
+  
+    .card-footer{
+      text-align: center;
+      padding: 0 1em;
+    }
+      .card-footer > img {
+        max-width: 50px;
+        max-height: 50px;
+      }
+      .card-footer > div{
+        display: flex;
+        justify-content: center;
+      }
+        .card-footer > div:first-child{
+          color:  grey;
+        }
+        .card-footer > div:first-child > p
+        {
+          min-width: 15px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+      .card-footer-divider{
+        color: grey;
+        margin: 0,50px,0,0;
+      }

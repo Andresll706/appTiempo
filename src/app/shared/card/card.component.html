@@ -1,0 +1,22 @@
+<mat-card class="card">
+    <mat-card-header> 
+      <mat-card-title class="card-title">{{municipio}}</mat-card-title>
+      <mat-card-subtitle  class="card-subtitle">{{day}}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content class="card-content">
+      <p  class="card-temp">{{tiempo?.mediaTemperatura}}</p>
+      <p class="card-uTemp">{{tiempo?.unidadTemperatura}}</p>
+      
+    </mat-card-content>
+    <mat-card-footer class="card-footer">
+      <img mat-card-image src="../../../assets/resources/precipitaciones.png" alt="icono de precipitaciones">
+      <div>
+        <p *ngFor="let precipitacion of tiempo?.probPrecipitacion">{{precipitacion.probabilidad}} % </p>
+      </div>
+      <mat-divider class="card-footer-divider"></mat-divider>
+      <div>
+        <p> | 00-06 | 06 - 12 | 12 - 18 | 18 - 24 |</p>
+      </div>
+    </mat-card-footer>
+  </mat-card>
+  
