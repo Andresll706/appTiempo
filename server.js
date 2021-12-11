@@ -7,6 +7,9 @@ const https = require('https')
 // Use Cors
 var cors = require('cors');
 
+// Use supertest
+// const request = require('supertest');
+
 // Create new instance of the express server
 var app = express();
 
@@ -169,3 +172,15 @@ app.get("/api/tiempo", function(req,res){
     GetTiempoMunicipio(codigo, unidad);
     res.send(JSON.stringify(tiempo));
 });
+
+module.exports = app;
+
+// //---------------- pruebas ------------------
+// request(app)
+//   .get('/api/status')
+//   .expect('Content-Type', /json/)
+//   .expect('Content-Length', '15')
+//   .expect(200)
+//   .end(function(err, res) {
+//     if (err) throw err;
+//   });
