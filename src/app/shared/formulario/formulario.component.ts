@@ -59,8 +59,8 @@ export class FormularioComponent implements OnInit {
 
   ngOnInit() {
     this.apiService
-        .getMunicipios()
-        .subscribe((result: any) => {
+      .getMunicipios()
+      .subscribe((result: any) => {
           this.Municipios = result;
           console.log(this.Municipios[0]);
         });

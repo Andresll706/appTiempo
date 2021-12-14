@@ -3,7 +3,11 @@ var express = require("express");
 // Use body-parser
 var bodyParser = require("body-parser");
 // Use https
-const https = require('https')
+// const https = require('https')
+
+//Use Axios
+const axios = require('axios');
+
 // Use Cors
 var cors = require('cors');
 
@@ -31,7 +35,8 @@ var key = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmRyZXNsbDcwNkBnbWFpbC5jb20iLCJqdGki
 // Init the server
 var server = app.listen(process.env.PORT || 8080, function () {
     var port = server.address().port;
-    //console.log("App now running on port", port);
+    console.log("App now running on port", port);
+    GetMunicipios();
 });
 
 
@@ -48,33 +53,38 @@ app.get("/api/status", function (req, res) {
 // ***********************************
 var datosfiltrados=[];
 
-function GetMunicipios(){
+async function GetMunicipios(){
     let datos = '';
     const settingsMunicipios = {
-        hostname: 'opendata.aemet.es',
-        path: '/opendata/api/maestro/municipios?api_key=' + key,
-        method: 'GET'
+        url: 'https://opendata.aemet.es/opendata/api/maestro/municipios?api_key='  + key,
+        method: 'GET',
+        async: true,
+        crossDomain: true
     };
     
-    const reqMunicipios = https.request(settingsMunicipios, function(res){
-    // console.log('statusCode:', res.statusCode);
-    // console.log('headers:', res.headers);
-    res.on('data', function(d){
-    // process.stdout.write(d);
-        datos += d;
-    });
-    res.on('end', function () {
-        let datosJSON = JSON.parse(datos);
-        let j = 0;
-        datosJSON.forEach(function (entry) {
-            entry.nombre
-            datosfiltrados[j] = {"codigo":entry.id.substring(2, entry.id.length) ,"nombre": entry.nombre};
-            j++;
-        }); 
-    });
-    }).on('error', (e) => {
-        console.error(e);
-    }).end();
+    try{
+        await axios(settingsMunicipios)
+                .then(function (response) {
+                    // handle success
+                    //console.log(response);
+                    let j = 0;
+                    response.data.forEach(function (entry) {
+                        entry.nombre;
+                        datosfiltrados[j] = { "codigo": entry.id.substring(2, entry.id.length), "nombre": entry.nombre };
+                        j++;
+                    });
+                    process.stdout.write(JSON.stringify(datosfiltrados) + '\n');
+                })
+                .catch(function (error) {
+                    // handle error
+                    console.log(error);
+                })
+                .then(function () {
+                    // always executed
+                });
+    } catch(error){
+        console.log(error.response.body);
+    }
 }
 
 app.get("/api/municipios", function(req,res){
@@ -86,40 +96,36 @@ app.get("/api/municipios", function(req,res){
 //  GET TIEMPO MUNICIPIOS
 // ***********************************
 var tiempo = [];
-function GetTiempoMunicipio( codigo , unidad ) {
+
+
+async function GetTiempoMunicipio( codigo , unidad ) {
     const settings = {
-        hostname: 'opendata.aemet.es',
-        path: '/opendata/api/prediccion/especifica/municipio/diaria/'+codigo+'?api_key=' + key ,
-        method: 'GET'
+        url: 'https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/diaria/'+codigo+'?api_key=' + key ,
+        method: 'GET',
+        async: true,
+        crossDomain: true
     };
 
     var pathDatos = [];
     let response ="";
-    const req = https.request(settings, (res) => {
-        res.on('data', function(data){
-         process.stdout.write(data);
-         response += data;
-        });
-        res.on('end', function () {
-            let datosJSON = JSON.parse(response);
+    await axios(settings)
+        .then(async function (response) {
+            let datosJSON = response.data;
             pathDatos = datosJSON.datos;
             pathDatos = pathDatos.slice(-8); 
-
+            //process.stdout.write(pathDatos + '\n');
             const settingsTempMunicipios = {
-                hostname: 'opendata.aemet.es',
-                path: '/opendata/sh/' + pathDatos,
-                method: 'GET'
+                url: 'https://opendata.aemet.es/opendata/sh/' + pathDatos,
+                method: 'GET',
+                async: true,
+                crossDomain: true
             };
-            let response2 = "";
-            const reqTempMunicipios = https.request(settingsTempMunicipios, (res) => {
-                res.on('data', function(data){
-                //process.stdout.write(data);
-                response2 += data;
-                });
-                res.on('end', function () {
-                let datosJSON = JSON.parse(response2);
-                // process.stdout.write(JSON.stringify(datosJSON) + '\n');
-                let tempMedia = (datosJSON[0].prediccion.dia[1].temperatura.maxima + datosJSON[0].prediccion.dia[1].temperatura.minima)/2;
+            await axios(settingsTempMunicipios) 
+            .then(function (response2) {
+                let datosTiempo = response2.data;
+                //process.stdout.write(JSON.stringify(datosTiempo) + '\n');
+                let tempMedia = (datosTiempo[0].prediccion.dia[1].temperatura.maxima + datosTiempo[0].prediccion.dia[1].temperatura.minima)/2;
+                process.stdout.write(unidad + '\n');
                 if(unidad == "G_FAH"){
                     tempMedia = (tempMedia * 9 / 5) + 32;
                 }
@@ -130,44 +136,44 @@ function GetTiempoMunicipio( codigo , unidad ) {
                         "unidadTemperatura": unidad,
                         "probPrecipitacion": [
                         {
-                            "probabilidad": datosJSON[0].prediccion.dia[1].probPrecipitacion[3].value,
+                            "probabilidad": datosTiempo[0].prediccion.dia[1].probPrecipitacion[3].value,
                             "periodo": "00-06"
                         },
                         {
-                            "probabilidad": datosJSON[0].prediccion.dia[1].probPrecipitacion[4].value,
+                            "probabilidad": datosTiempo[0].prediccion.dia[1].probPrecipitacion[4].value,
                             "periodo": "06-12"
                         },
                         {
-                            "probabilidad": datosJSON[0].prediccion.dia[1].probPrecipitacion[5].value,
+                            "probabilidad": datosTiempo[0].prediccion.dia[1].probPrecipitacion[5].value,
                             "periodo": "12-18"
                         },
                         {
-                            "probabilidad": datosJSON[0].prediccion.dia[1].probPrecipitacion[6].value,
+                            "probabilidad": datosTiempo[0].prediccion.dia[1].probPrecipitacion[6].value,
                             "periodo": "18-24"
                         }]
                     }];
-                    //process.stdout.write(JSON.stringify(tiempo) + '\n');
-                });
+                process.stdout.write(JSON.stringify(tiempo) + '\n');
+            }).catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
             });
-          
-            reqTempMunicipios.on('error', (e) => {
-                console.error(e);
-            });
-            reqTempMunicipios.end();
+        }).catch(function (error) {
+            // handle error
+            console.log(error);
+        })
+        .then(function () {
+            // always executed
         });
-    });
-      
-    req.on('error', (e) => {
-      console.error(e);
-    });
-    req.end();
 }
 
 
 app.get("/api/tiempo", function(req,res){
     let codigo = req.query.codigo;
     let unidad = req.query.unidad;
-    
+    process.stdout.write(unidad + '\n');
     GetTiempoMunicipio(codigo, unidad);
     res.send(JSON.stringify(tiempo));
 });
