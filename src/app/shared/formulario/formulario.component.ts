@@ -62,7 +62,7 @@ export class FormularioComponent implements OnInit {
       .getMunicipios()
       .subscribe((result: any) => {
           this.Municipios = result;
-          console.log(this.Municipios[0]);
+          console.log( decodeURIComponent(this.Municipios[2].nombre));
         });
   }
 
@@ -98,5 +98,15 @@ export class FormularioComponent implements OnInit {
     console.log(newValue.value);
     this.selectedTemperature = newValue;
     this.getTemperature();
+  }
+
+  private escapeHtml(s: string)
+  {
+      return s
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
   }
 }

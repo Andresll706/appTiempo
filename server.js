@@ -59,7 +59,12 @@ async function GetMunicipios(){
         url: 'https://opendata.aemet.es/opendata/api/maestro/municipios?api_key='  + key,
         method: 'GET',
         async: true,
-        crossDomain: true
+        crossDomain: true,
+        headers: 
+        { 
+            'Content-Type': 'application/json;charset=UTF-8'
+        },
+        responseEncoding: 'binary'
     };
     
     try{
@@ -92,6 +97,8 @@ app.get("/api/municipios", function(req,res){
     res.send(JSON.stringify(datosfiltrados));
 });
 
+
+
 // ***********************************
 //  GET TIEMPO MUNICIPIOS
 // ***********************************
@@ -103,7 +110,8 @@ async function GetTiempoMunicipio( codigo , unidad ) {
         url: 'https://opendata.aemet.es/opendata/api/prediccion/especifica/municipio/diaria/'+codigo+'?api_key=' + key ,
         method: 'GET',
         async: true,
-        crossDomain: true
+        crossDomain: true,
+        responseEncoding: 'binary'
     };
 
     var pathDatos = [];
@@ -118,7 +126,8 @@ async function GetTiempoMunicipio( codigo , unidad ) {
                 url: 'https://opendata.aemet.es/opendata/sh/' + pathDatos,
                 method: 'GET',
                 async: true,
-                crossDomain: true
+                crossDomain: true,
+                responseEncoding: 'binary'
             };
             await axios(settingsTempMunicipios) 
             .then(function (response2) {
