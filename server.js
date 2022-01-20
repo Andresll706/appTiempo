@@ -30,7 +30,7 @@ app.use(bodyParser.json());
 var distDir = __dirname + "/dist/";
 app.use(express.static(distDir));
 
-var key = 'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhbmRyZXNsbDcwNkBnbWFpbC5jb20iLCJqdGkiOiI3YWFkYTMzZi00NjE4LTQzYWUtYWIwYy1hOTI3NTQzM2ZiYjAiLCJpc3MiOiJBRU1FVCIsImlhdCI6MTU2ODcyMDE2NywidXNlcklkIjoiN2FhZGEzM2YtNDYxOC00M2FlLWFiMGMtYTkyNzU0MzNmYmIwIiwicm9sZSI6IiJ9.oaEKRBmJwMcw_Ll_wf2zhoZu0mBTArXht4udFhp0u58';
+var key = 'key';
 
 // Init the server
 var server = app.listen(process.env.PORT || 8080, function () {
